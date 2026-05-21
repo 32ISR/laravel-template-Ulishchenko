@@ -1,48 +1,40 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow — @yield('title', 'Задачи')</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand" href="{{ route('dashboard') }}">TaskFlow</a>
-        @auth
-        <div class="d-flex align-items-center gap-3">
-            <a href="{{ route('tasks.index') }}" class="text-white text-decoration-none">Задачи</a>
-            <a href="{{ route('categories.index') }}" class="text-white text-decoration-none">Категории</a>
-            @if(auth()->user()->isAdmin())
-                <span class="badge bg-warning text-dark">Admin</span>
-            @endif
-            <span class="text-white-50">{{ auth()->user()->name }}</span>
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button class="btn btn-sm btn-outline-light">Выйти</button>
-            </form>
+@extends('layouts.app')
+@section('title', 'Вход')
+@section('content')
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="mb-4">Вход в систему</h4>
+                <form action="{{ route('login') }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
+                               value="{{ old('email') }}" autofocus>
+                        @error('email')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Пароль</label>
+                        <input type="password" name="password" class="form-control @error('password') is-invalid @enderror">
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" name="remember" class="form-check-input" id="remember">
+                        <label class="form-check-label" for="remember">Запомнить меня</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Войти</button>
+                </form>
+                <hr>
+                <p class="text-center mb-0">
+                    Нет аккаунта? <a href="{{ route('register') }}">Зарегистрироваться</a>
+                </p>
+            </div>
         </div>
-        @endauth
     </div>
-</nav>
-
-<main class="container py-4">
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-
-    @if($errors->any())
-        <div class="alert alert-danger">
-            <ul class="mb-0">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    @yield('content')
-</main>
-</body>
-</html>
+</div>
+@endsection
